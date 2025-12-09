@@ -43,7 +43,7 @@ jobs:
       uses: actions/upload-artifact@v4  # 必须是 v4
       with:
         name: android-apk
-        path: build/app/outputs/flutter-apk/app-debug.apk  # 使用 debug 版本
+        path: build/apk/*.apk  # 正确的Flet APK路径
         retention-days: 7
 
     - name: Upload debug APK (if release build fails)
