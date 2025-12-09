@@ -1,0 +1,41 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: pip install flet
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build APK
+        run: flet build apk --verbose
+
+      # --- 核心修复：上传Flet生成的APK ---
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jgj59-scorer-apk
+          # 这是 Flet 构建 APK 的唯一正确输出路径
+          path: build/apk/*.apk
+          if-no-files-found: error # 如果找不到文件，则报错，便于排查
+          retention-days: 7
