@@ -1,31 +1,49 @@
-[tool.flet]
-# 应用基本信息
-name = "JGJ59安全评分"
-description = "JGJ59-2011建筑施工安全检查标准评分系统"
-org = "com.lianghuaijianshe"  # 建议使用你的组织名
+[build-system]
+requires = ["flet"]
+build-backend = "flet.build"
+
+[project]
+name = "safety-scoring-app"
 version = "1.0.0"
+description = "JGJ59-2011建筑施工安全智能评分系统"
+authors = [
+    {name = "安徽两淮建设技术中心", email = "contact@example.com"},
+]
+license = {text = "MIT"}
+requires-python = ">=3.8"
+dependencies = [
+    "flet>=0.21.0",
+]
 
-# 安卓应用配置
-android_package_name = "com.lianghuaijianshe.jgj59scorer"
-android_version_code = 1
-android_min_sdk = 21  # 支持Android 5.0及以上
-android_target_sdk = 34  # 目标SDK版本
+[tool.flet]
+app_name = "安全评分系统"
+app_short_name = "安全评分"
+app_description = "JGJ59-2011建筑施工安全检查标准评分系统"
+company_name = "安徽两淮建设技术中心"
+product_name = "安全评分系统"
+copyright = "© 2025 安徽两淮建设技术中心"
+version = "1.0.0"
+homepage = "https://example.com"
+issues_page = "https://example.com/issues"
+privacy_policy = "https://example.com/privacy"
+theme_color = "#2196F3"
+sdk_version = "34"
 
-# 可选：应用图标（需要将icon.png放在assets文件夹）
-# android_icon = "assets/icon.png"
+[tool.flet.android]
+package_name = "com.lianghuai.safety.scoring"
+compile_sdk_version = 34
+min_sdk_version = 24
+target_sdk_version = 34
+permissions = [
+    "INTERNET",
+    "WRITE_EXTERNAL_STORAGE",
+    "READ_EXTERNAL_STORAGE"
+]
+debug = false
+release = true
 
-# 权限配置
-[tool.flet.android.manifest]
-# 如果需要访问网络，添加：
-# <uses-permission android:name="android.permission.INTERNET" />
-# 如果需要存储文件，添加：
-# <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-# <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-[tool.flet.android.manifest_application]
-# 允许明文流量（方便本地调试）
-usesCleartextTraffic = "true"
-# 允许传统外部存储访问（Android 10及以上需要）
-requestLegacyExternalStorage = "true"
-# 设置屏幕方向（portrait=竖屏，landscape=横屏，sensor=自动旋转）
-android:screenOrientation = "portrait"
+[tool.flet.ios]
+bundle_identifier = "com.lianghuai.safety.scoring"
+team_id = ""
+codesign_identity = ""
+provisioning_profile = ""
