@@ -39,15 +39,18 @@ def main(page: ft.Page):
     page.theme = ft.Theme(
         font_family="Microsoft YaHei"
     )
+
     page.title = "JGJ59-2011建筑施工安全智能评分系统"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.padding = 0
     page.scroll = ft.ScrollMode.AUTO
     page.bgcolor = "#f5f5f5"
+
     # 设置窗口大小
     page.window.width = 800
     page.window.height = 900
     page.window.resizable = True
+
     # 存储控件引用的字典
     controls_map = {}
 
@@ -85,6 +88,7 @@ def main(page: ft.Page):
 
         # 3. 内容区域
         content_area = ft.Column(visible=True)
+
         if not item.is_complex:
             # 简单项：直接输入分数
             score_input = ft.TextField(
@@ -106,64 +110,103 @@ def main(page: ft.Page):
                 'input': score_input
             }
         else:
-            # 复杂项：子项列表，使用两列布局
+            # 复杂项：特殊处理脚手架
             sub_controls = []
-            # 创建两列布局
-            left_column = ft.Column(spacing=5)
-            right_column = ft.Column(spacing=5)
 
-            # 计算每列应该有多少项（尽量平均分配）
-            mid_index = (len(item.sub_items) + 1) // 2  # 向上取整
+            if item.key == "scaffold":  # 脚手架特殊处理，保持两列布局
+                # 创建两列布局
+                left_column = ft.Column(spacing=10)
+                right_column = ft.Column(spacing=10)
 
-            # 分配子项到左右两列
-            for i, sub_name in enumerate(item.sub_items):
-                cb = ft.Checkbox(label=sub_name, value=False, fill_color="blue")
-                tf = ft.TextField(
-                    label="得分",
-                    width=100,
-                    height=40,
-                    text_size=13,
-                    content_padding=5,
-                    keyboard_type=ft.KeyboardType.NUMBER,
-                    visible=False,
-                    disabled=True,
-                    border_color="blue",
-                    on_change=lambda e: validate_input(e.control)
+                # 计算每列应该有多少项（尽量平均分配）
+                mid_index = (len(item.sub_items) + 1) // 2  # 向上取整
+
+                # 分配子项到左右两列
+                for i, sub_name in enumerate(item.sub_items):
+                    cb = ft.Checkbox(label=sub_name, value=False, fill_color="blue")
+                    tf = ft.TextField(
+                        label="得分",
+                        width=100,
+                        height=40,
+                        text_size=13,
+                        content_padding=5,
+                        keyboard_type=ft.KeyboardType.NUMBER,
+                        visible=False,
+                        disabled=True,
+                        border_color="blue",
+                        on_change=lambda e: validate_input(e.control)
+                    )
+
+                    def on_cb_change(e, text_field=tf):
+                        text_field.visible = e.control.value
+                        text_field.disabled = not e.control.value
+                        text_field.update()
+
+                    cb.on_change = on_cb_change
+
+                    # 创建子项垂直布局：复选框在上，输入框在下
+                    sub_item_col = ft.Column([
+                        cb,
+                        ft.Container(
+                            content=tf,
+                            padding=ft.padding.only(left=20)  # 左侧缩进与复选框文本对齐
+                        )
+                    ], spacing=2)
+
+                    sub_controls.append({'cb': cb, 'input': tf})
+
+                    # 根据索引分配到左列或右列
+                    if i < mid_index:
+                        left_column.controls.append(sub_item_col)
+                    else:
+                        right_column.controls.append(sub_item_col)
+
+                # 创建两列布局的容器
+                two_column_layout = ft.Row(
+                    [left_column, right_column],
+                    spacing=20,
+                    run_spacing=5
                 )
 
-                def on_cb_change(e, text_field=tf):
-                    text_field.visible = e.control.value
-                    text_field.disabled = not e.control.value
-                    text_field.update()
+                content_area.controls.append(ft.Container(content=two_column_layout, padding=10))
+            else:  # 其他复杂项使用垂直单列布局
+                sub_column = ft.Column(spacing=10)  # 增加子项间距
 
-                cb.on_change = on_cb_change
+                for sub_name in item.sub_items:
+                    cb = ft.Checkbox(label=sub_name, value=False, fill_color="blue")
+                    tf = ft.TextField(
+                        label="得分",
+                        width=120,
+                        height=40,
+                        text_size=13,
+                        content_padding=5,
+                        keyboard_type=ft.KeyboardType.NUMBER,
+                        visible=False,
+                        disabled=True,
+                        border_color="blue",
+                        on_change=lambda e: validate_input(e.control)
+                    )
 
-                # 创建子项行
-                row = ft.Row(
-                    [cb, tf],
-                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                    vertical_alignment=ft.CrossAxisAlignment.CENTER
-                )
+                    def on_cb_change(e, text_field=tf):
+                        text_field.visible = e.control.value
+                        text_field.disabled = not e.control.value
+                        text_field.update()
 
-                # 添加到子项控制列表
-                sub_controls.append({'cb': cb, 'input': tf})
+                    cb.on_change = on_cb_change
 
-                # 根据索引分配到左列或右列
-                if i < mid_index:
-                    left_column.controls.append(row)
-                else:
-                    right_column.controls.append(row)
+                    # 创建子项垂直布局：复选框在上，输入框在下
+                    sub_item_col = ft.Column([
+                        cb,
+                        ft.Container(
+                            content=tf,
+                            padding=ft.padding.only(left=20)  # 左侧缩进与复选框文本对齐
+                        )
+                    ], spacing=2)
 
-            # 创建两列布局的容器
-            two_column_layout = ft.Row(
-                [left_column, right_column],
-                spacing=20,
-                run_spacing=5
-            )
+                    sub_column.controls.append(sub_item_col)
+                    sub_controls.append({'cb': cb, 'input': tf})
 
-            content_area.controls.append(
-                ft.Container(content=two_column_layout, padding=ft.padding.all(10))
-            )
+                content_area.controls.append(ft.Container(content=sub_column, padding=10))
 
             controls_map[item.key] = {
                 'type': 'complex',
@@ -208,6 +251,7 @@ def main(page: ft.Page):
         content_col = switch.data
         content_col.visible = switch.value
         content_col.update()
+
         status = "已启用" if switch.value else "已设为缺项 (不计入总权重)"
         page.snack_bar = ft.SnackBar(ft.Text(f"{key} {status}"), duration=1000)
         page.snack_bar.open = True
@@ -216,6 +260,7 @@ def main(page: ft.Page):
     # --- 核心计算逻辑 ---
     def calculate(e):
         print("计算按钮被点击！✅")
+
         total_weighted_score = 0.0
         valid_weight_sum = 0.0
         error_fields = []
@@ -234,6 +279,7 @@ def main(page: ft.Page):
 
                 weight = data['weight']
                 valid_weight_sum += weight
+
                 item_score_100 = 0.0
 
                 if data['type'] == 'simple':
@@ -295,6 +341,7 @@ def main(page: ft.Page):
 
             print(f"计算完成，最终得分: {final_score:.2f} ✅")
             show_result_dialog(final_score, total_weighted_score, valid_weight_sum, complex_items_details)
+
         except Exception as ex:
             print(f"计算错误: {ex}")
             page.snack_bar = ft.SnackBar(
@@ -307,6 +354,7 @@ def main(page: ft.Page):
     # --- 结果展示 - 关键修改部分 ---
     def show_result_dialog(final, raw, base, complex_details):
         print(f"显示结果对话框，得分: {final} ✅")
+
         # 判断安全等级
         if final >= 80:
             score_color = "green"
@@ -442,11 +490,13 @@ def main(page: ft.Page):
         for key, data in controls_map.items():
             data['enabled'].value = True
             data['enabled'].update()
+
             if hasattr(data['enabled'], 'data'):
                 content_col = data['enabled'].data
                 if content_col:
                     content_col.visible = True
                     content_col.update()
+
             if data['type'] == 'simple':
                 data['input'].value = ""
                 data['input'].update()
