@@ -44,6 +44,7 @@ jobs:
       with:
         name: android-apk
         path: build/app/outputs/flutter-apk/app-release.apk
+        path: build/app/outputs/flutter-apk/app-debug.apk
         retention-days: 7
         
     - name: Upload debug APK (if release build fails)
