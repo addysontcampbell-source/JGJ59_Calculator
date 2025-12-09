@@ -1,0 +1,31 @@
+[tool.flet]
+# 应用基本信息
+name = "JGJ59安全评分"
+description = "JGJ59-2011建筑施工安全检查标准评分系统"
+org = "com.lianghuaijianshe"  # 建议使用你的组织名
+version = "1.0.0"
+
+# 安卓应用配置
+android_package_name = "com.lianghuaijianshe.jgj59scorer"
+android_version_code = 1
+android_min_sdk = 21  # 支持Android 5.0及以上
+android_target_sdk = 34  # 目标SDK版本
+
+# 可选：应用图标（需要将icon.png放在assets文件夹）
+# android_icon = "assets/icon.png"
+
+# 权限配置
+[tool.flet.android.manifest]
+# 如果需要访问网络，添加：
+# <uses-permission android:name="android.permission.INTERNET" />
+# 如果需要存储文件，添加：
+# <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+# <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+[tool.flet.android.manifest_application]
+# 允许明文流量（方便本地调试）
+usesCleartextTraffic = "true"
+# 允许传统外部存储访问（Android 10及以上需要）
+requestLegacyExternalStorage = "true"
+# 设置屏幕方向（portrait=竖屏，landscape=横屏，sensor=自动旋转）
+android:screenOrientation = "portrait"
