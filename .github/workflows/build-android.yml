@@ -40,14 +40,14 @@ jobs:
         flet build apk --verbose
 
     - name: Upload APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # 必须是 v4
       with:
         name: android-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+        path: build/app/outputs/flutter-apk/app-debug.apk  # 使用 debug 版本
         retention-days: 7
 
     - name: Upload debug APK (if release build fails)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # 必须是 v4
       with:
         name: android-apk-debug
         path: build/app/outputs/flutter-apk/app-debug.apk
