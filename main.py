@@ -24,10 +24,10 @@ ITEMS_CONFIG = [
     SafetyItem("template", "模板支架", 10),
     SafetyItem("height", "高处作业", 10),
     SafetyItem("electric", "施工用电", 10),
-    SafetyItem("hoist", "物料提升机与施工升降机", 10, is_complex=True, sub_items=[
+    SafetyItem("hoist", "物料提升机与\n施工升降机", 10, is_complex=True, sub_items=[
         "物料提升机", "施工升降机"
     ]),
-    SafetyItem("crane", "塔式起重机与起重吊装", 10, is_complex=True, sub_items=[
+    SafetyItem("crane", "塔式起重机与\n起重吊装", 10, is_complex=True, sub_items=[
         "塔式起重机", "起重吊装"
     ]),
     SafetyItem("machinery", "施工机具", 5),
@@ -268,8 +268,8 @@ def main(page: ft.Page):
         # 用于存储复杂项的详细分数
         complex_items_details = {
             "scaffold": {"name": "脚手架", "sub_scores": [], "avg_score": 0, "weighted_score": 0},
-            "hoist": {"name": "物料提升机与施工升降机", "sub_scores": [], "avg_score": 0, "weighted_score": 0},
-            "crane": {"name": "塔式起重机与起重吊装", "sub_scores": [], "avg_score": 0, "weighted_score": 0}
+            "hoist": {"name": "物料提升机与\n施工升降机", "sub_scores": [], "avg_score": 0, "weighted_score": 0},
+            "crane": {"name": "塔式起重机与\n起重吊装", "sub_scores": [], "avg_score": 0, "weighted_score": 0}
         }
 
         try:
@@ -387,7 +387,7 @@ def main(page: ft.Page):
         hoist = complex_details["hoist"]
         if hoist["sub_scores"]:
             hoist_content = [
-                ft.Text(f"{hoist['name']}子项得分:", weight=ft.FontWeight.BOLD, size=14),
+                ft.Text(f"物料提升机与施工升降机子项得分:", weight=ft.FontWeight.BOLD, size=14),
             ]
             for sub_name, score in hoist["sub_scores"]:
                 hoist_content.append(ft.Text(f"  • {sub_name}: {score:.1f}分", size=12))
@@ -401,7 +401,7 @@ def main(page: ft.Page):
         crane = complex_details["crane"]
         if crane["sub_scores"]:
             crane_content = [
-                ft.Text(f"{crane['name']}子项得分:", weight=ft.FontWeight.BOLD, size=14),
+                ft.Text(f"塔式起重机与起重吊装子项得分:", weight=ft.FontWeight.BOLD, size=14),
             ]
             for sub_name, score in crane["sub_scores"]:
                 crane_content.append(ft.Text(f"  • {sub_name}: {score:.1f}分", size=12))
@@ -701,5 +701,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"程序启动错误: {e}")
         import traceback
-
         traceback.print_exc()
