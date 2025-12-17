@@ -34,22 +34,23 @@ jobs:
     - name: Accept Android licenses
       run: |
         yes | sdkmanager --licenses || true
+        flutter doctor
 
     - name: Build Android APK
       run: |
         flet build apk --verbose
 
     - name: Upload APK artifact
-      uses: actions/upload-artifact@v4  # 必须是 v4
+      uses: actions/upload-artifact@v4
       with:
         name: android-apk
-        path: build/apk/*.apk  # 正确的Flet APK路径
+        path: build/apk/*.apk
         retention-days: 7
 
-    - name: Upload debug APK (if release build fails)
-      uses: actions/upload-artifact@v4  # 必须是 v4
+    - name: Upload build logs
+      uses: actions/upload-artifact@v4
       with:
-        name: android-apk-debug
-        path: build/app/outputs/flutter-apk/app-debug.apk
-        retention-days: 7
+        name: build-logs
+        path: build/
+        retention-days: 1
         if-no-files-found: ignore
